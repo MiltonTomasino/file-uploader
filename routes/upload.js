@@ -2,19 +2,8 @@ const router = require("express").Router();
 const controller = require("../controllers/uploadController");
 const { isLoggedIn } = require("./authMiddleware");
 const multer = require("multer");
-const path = require("path");
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "/Users/miltontomasino/Desktop/temp_files");
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
-    }
-})
-
-const upload = multer({ storage: storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/", isLoggedIn, controller.getHomePage);
 
@@ -30,6 +19,8 @@ router.get("/log-out", (req, res, next) => {
     })
 })
 
-router.post("/create-folder", isLoggedIn, controller.createFolder)
+router.post("/create-folder", isLoggedIn, controller.createFolder);
+
+router.get("/download/:id", controller.downloadFile);
 
 module.exports = router;

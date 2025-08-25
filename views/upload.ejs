@@ -13,26 +13,10 @@
         <form action="/upload-file" method="POST" enctype="multipart/form-data">
             <label for="file">Upload file: </label>
             <input type="file" name="file" id="file">
-            <!-- <label for="folderId">Choose folder: </label>
-            <select name="folderId" id="folderId">
-                <option value="">Root</option>
-                <% folders.forEach(folder => { %>
-                    <option value="<%= folder.id %>"><%= folder.id %> - Folder</option>
-                <% }) %>
-            </select> -->
-
             <input type="hidden" name="folderId" id="folderId">
-
             <button type="submit">submit</button>
         </form>
         <form action="create-folder" method="POST">
-            <!-- <label for="parentId">Parent folder: </label>
-            <select name="parentId">
-                <option value="">Root</option>
-                <% folders.forEach(folder => { %>
-                    <option value="<%= folder.id %>"><%= folder.id %> - <%= folder.folderName %></option>
-                <% }) %>
-            </select> -->
             <input type="hidden" name="parentId" id="parentId">
             <input type="text" name="folderName" placeholder="Folder name" required>
             <button type="submit">create folder</button>
@@ -46,9 +30,15 @@
             <li>
                 <span class="caret"><%= f.folderName %></span>
                 <button class="add-btn hidden" data-id="<%= f.id %>">+</button>
+
                 <% if (folders.some(child => child.parentId === f.id)) { %>
-                    <ul class="nested">
+                    <ul class="nested"> 
                         <% renderTree(folders, f.id); %>
+                        <% files.filter(file => file.folderId === f.id).forEach(file => { %>
+                            <li>
+                                <a href="/download/<%= file.id %>" download> <%= file.originalName %></a>
+                            </li>
+                        <% }) %>
                     </ul> 
                 <% } %>
             </li>

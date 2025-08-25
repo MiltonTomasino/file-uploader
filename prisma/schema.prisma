@@ -32,9 +32,9 @@ model File {
   encoding String
   mimeType String
   size Int
-  destination String
-  fileName String
-  path String
+  destination String?
+  fileName String?
+  path String?
   buffer Bytes?
 
 }

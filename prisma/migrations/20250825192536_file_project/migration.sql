@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "public"."File" ALTER COLUMN "destination" DROP NOT NULL,
+ALTER COLUMN "fileName" DROP NOT NULL,
+ALTER COLUMN "path" DROP NOT NULL,
+ALTER COLUMN "buffer" DROP NOT NULL;

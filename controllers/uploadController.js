@@ -18,8 +18,9 @@ function buildFolerOptions (folders, parentId = null, depth = 0) {
 
 module.exports.getHomePage = async (req, res) => {
     const folders = await prisma.folder.findMany();
+    const files = await prisma.file.findMany();
     const folderOptions = buildFolerOptions(folders);
-    res.render("upload", { title: "Home Page", user: req.user, folders: folders, folderOptions });
+    res.render("upload", { title: "Home Page", user: req.user, folders: folders, folderOptions, files });
 }
 
 module.exports.uploadFile = async (req, res) => {
@@ -47,7 +48,7 @@ module.exports.uploadFile = async (req, res) => {
                 destination: req.file.destination,
                 fileName: req.file.filename,
                 path: req.file.path,
-                buffer: req.file.buffer || Buffer.from([]),
+                buffer: req.file.buffer,
             }
         });
 
@@ -86,6 +87,35 @@ module.exports.createFolder = async (req, res) => {
             title: "Status04",
             header: "Folder Error",
             message: "Failed to create folder."
+        });
+    }
+}
+
+module.exports.downloadFile = async (req, res) => {
+    try {
+        const fileId = parseInt(req.params.id);
+        const file = await prisma.file.findUnique({
+            where: { id: fileId }
+        });
+
+        if (!file) {
+            return res.render("message", {
+                title: "Status05",
+                header: "Error",
+                message: "File was not found."
+            });
+        }
+
+        res.setHeader("Content-Disposition", `attachment; filename="${file.originalName}"`);
+        res.setHeader("Content-Type", file.mimeType);
+
+        res.send(file.buffer);
+    } catch (error) {
+        console.error("Error downloading file: ", error);
+        res.render("message", {
+            title: "Status05",
+            header: "Error",
+            message: "There was an error downloading the file."
         });
     }
 }

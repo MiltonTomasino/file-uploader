@@ -35,13 +35,14 @@ model File {
   destination String
   fileName String
   path String
-  buffer Bytes
+  buffer Bytes?
 
 }
 
 model Folder {
   id Int @id @default(autoincrement())
   parentId Int? 
+  folderName String
   parent Folder? @relation("FolderHierarchy", fields: [parentId], references: [id])
   children Folder[] @relation("FolderHierarchy")
   files File[]

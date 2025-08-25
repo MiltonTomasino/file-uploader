@@ -30,4 +30,6 @@ router.get("/log-out", (req, res, next) => {
     })
 })
 
+router.post("/create-folder", isLoggedIn, controller.createFolder)
+
 module.exports = router;
